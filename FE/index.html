@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Booking Form</h1>
+    <form id="booking-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="service">Service:</label>
+        <select id="service" name="service" required>
+            <option value="">Select a service</option>
+            <!-- Options will be populated dynamically from backend -->
+        </select>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="time">Time:</label>
+        <select id="time" name="time" required>
+            <option value="">Select a time</option>
+            <!-- Options will be populated dynamically from backend -->
+        </select>
+
+        <button type="submit">Book Now</button>
+    </form>
+
+    <script>
+        // Fetch data for services and available times from backend
+        fetch('http://localhost:3000/form-data')
+            .then(response => response.json())
+            .then(data => {
+                const serviceSelect = document.getElementById('service');
+                const timeSelect = document.getElementById('time');
+                // Populate service options
+                data.services.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service;
+                    option.textContent = service;
+                    serviceSelect.appendChild(option);
+                });
+
+                // Populate time options
+                data.availableTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+            });
+    </script>
+</body>
+</html>
