@@ -57,5 +57,38 @@
                 });
             });
     </script>
+    <script>
+        document.getElementById('booking-form').addEventListener('submit', function(event) {
+            // Ngăn chặn việc gửi form mặc định
+            event.preventDefault();
+    
+            // Lấy dữ liệu từ form
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                service: document.getElementById('service').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value
+            };
+            // Gửi yêu cầu POST đến backend
+            fetch('http://localhost:3000/book-service', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                    })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Xử lý phản hồi từ backend
+                alert(data.message); // Hiển thị thông báo cho người dùng
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+                alert('An error occurred. Please try again later.'); // Hiển thị thông báo lỗi cho người dùng
+            });
+        });
+    </script>
+    
 </body>
 </html>
