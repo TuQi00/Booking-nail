@@ -11,7 +11,8 @@ const handleBooking = async (req, res) => {
             date: bookingData.date,
             time: bookingData.time
         });
-
+        const bookings = await Booking.find();
+        res.json("Booking data: ",bookings);
         const savedBooking = await booking.save();
         res.json({ message: 'Booking received successfully', data: savedBooking });
     } catch (error) {
