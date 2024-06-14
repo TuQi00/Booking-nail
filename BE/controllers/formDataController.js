@@ -20,3 +20,4 @@ const getAllBookings = async (req, res) => {
 };
 
 module.exports = { getFormData, getAllBookings };
+
