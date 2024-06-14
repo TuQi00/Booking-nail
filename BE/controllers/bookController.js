@@ -4,20 +4,21 @@ const handleBooking = async (req, res) => {
     const bookingData = req.body;
     console.log('bookingData: ', bookingData);
     try {
-        const booking = new Booking({
-            name: bookingData.name,
-            email: bookingData.email,
-            service: bookingData.service,
-            date: bookingData.date,
-            time: bookingData.time
-        });
-        const bookings = await Booking.find();
-        res.json("Booking data: ",bookings);
-        const savedBooking = await booking.save();
-        res.json({ message: 'Booking received successfully', data: savedBooking });
+        const { name, email, service, date, time } = req.body;
+
+        // Basic validation
+        if (!name || !email || !service || !date || !time) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        // Create a new booking
+        const newBooking = new Booking({ name, email, service, date, time });
+        await newBooking.save();
+
+        res.status(201).json({ message: 'Booking created successfully' });
     } catch (error) {
-        console.error('Error saving booking:', error);
-        res.status(500).json({ message: 'Error saving booking', error: error.message });
+        console.error('Error creating booking:', error);
+        res.status(500).json({ message: 'Error creating booking', error: error.message });
     }
 };
 
