@@ -69,3 +69,24 @@ form select {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.grid-item {
+    padding: 10px;
+    text-align: center;
+    background-color: #2a2c30;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.grid-item.selected {
+    background-color: #218838;
+    color: white;
+    border-color: #0056b3;
+}
+

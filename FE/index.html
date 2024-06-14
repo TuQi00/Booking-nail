@@ -16,19 +16,17 @@
         <input type="email" id="email" name="email" required>
 
         <label for="service">Service:</label>
-        <select id="service" name="service" required>
-            <option value="">Select a service</option>
-            <!-- Options will be populated dynamically from backend -->
-        </select>
+        <div id="service-grid" class="grid-container"></div>
 
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required>
 
         <label for="time">Time:</label>
-        <select id="time" name="time" required>
-            <option value="">Select a time</option>
-            <!-- Options will be populated dynamically from backend -->
-        </select>
+        <div id="time-grid" class="grid-container"></div>
+
+        <!-- Hidden input fields to store selected service and time -->
+        <input type="hidden" id="selected-service" name="service">
+        <input type="hidden" id="selected-time" name="time">
 
         <button type="submit">Book Now</button>
     </form>
@@ -38,57 +36,82 @@
         fetch('http://localhost:3000/form-data')
             .then(response => response.json())
             .then(data => {
-                const serviceSelect = document.getElementById('service');
-                const timeSelect = document.getElementById('time');
+                const serviceGrid = document.getElementById('service-grid');
+                const timeGrid = document.getElementById('time-grid');
+
                 // Populate service options
                 data.services.forEach(service => {
-                    const option = document.createElement('option');
-                    option.value = service;
-                    option.textContent = service;
-                    serviceSelect.appendChild(option);
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.classList.add('grid-item');
+                    button.textContent = service.name;
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('#service-grid .grid-item').forEach(item => item.classList.remove('selected'));
+                        button.classList.add('selected');
+                        document.getElementById('selected-service').value = service.name;
+                    });
+                    serviceGrid.appendChild(button);
                 });
 
                 // Populate time options
                 data.availableTimes.forEach(time => {
-                    const option = document.createElement('option');
-                    option.value = time;
-                    option.textContent = time;
-                    timeSelect.appendChild(option);
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.classList.add('grid-item');
+                    button.textContent = time;
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('#time-grid .grid-item').forEach(item => item.classList.remove('selected'));
+                        button.classList.add('selected');
+                        document.getElementById('selected-time').value = time;
+                    });
+                    timeGrid.appendChild(button);
                 });
             });
-    </script>
-    <script>
+
         document.getElementById('booking-form').addEventListener('submit', function(event) {
-            // Ngăn chặn việc gửi form mặc định
             event.preventDefault();
     
-            // Lấy dữ liệu từ form
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
-                service: document.getElementById('service').value,
+                service: document.getElementById('selected-service').value,
                 date: document.getElementById('date').value,
-                time: document.getElementById('time').value
+                time: document.getElementById('selected-time').value
             };
-            // Gửi yêu cầu POST đến backend
+
             fetch('http://localhost:3000/book-service', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                    })
+                },
+                body: JSON.stringify(formData)
+            })
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Xử lý phản hồi từ backend
-                alert(data.message); // Hiển thị thông báo cho người dùng
+                console.log(data);
+                alert(data.message);
             })
             .catch(error => {
                 console.error('Error:', error.message);
-                alert('An error occurred. Please try again later.'); // Hiển thị thông báo lỗi cho người dùng
+                alert('An error occurred. Please try again later.');
             });
         });
+
+        // Fetch all bookings from backend and log to console
+        fetch('http://localhost:3000/all-bookings')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('All Bookings:', data);
+            })
+            .catch(error => {
+                console.error('Error fetching bookings:', error.message);
+                alert('An error occurred while fetching bookings. Please try again later.');
+            });
     </script>
-    
 </body>
 </html>
