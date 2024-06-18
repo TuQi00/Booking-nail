@@ -12,6 +12,7 @@ h1 {
 }
 
 form {
+    position: relative;
     max-width: 500px;
     margin: 50px auto;
     padding: 20px;
@@ -53,22 +54,6 @@ button:hover {
     background-color: #218838;
 }
 
-form br {
-    clear: both;
-}
-
-form label {
-    margin-bottom: 5px;
-}
-
-form input,
-form select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -88,4 +73,35 @@ form select {
     background-color: #218838;
     color: white;
     border-color: #0056b3;
+}
+/* Style for the back button */
+button.back-button {
+    width: 30%;
+    background-color: #f44336; /* Red color for back button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style for the next button */
+button.next-button {
+    width: 30%;
+    background-color: #4CAF50; /* Green color for next button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
 }
