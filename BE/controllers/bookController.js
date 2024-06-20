@@ -1,4 +1,4 @@
-const { Booking } = require('../dbconfigs/models');
+const { Booking } = require('../models/_models');
 
 const handleBooking = async (req, res) => {
     const bookingData = req.body;
