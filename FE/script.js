@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Back button handlers
     document.getElementById('back-button-1').addEventListener('click', () => {
-        console.log("hello");
         document.getElementById('step-1').style.display = 'none';
         document.getElementById('step-0').style.display = 'block';
     });
