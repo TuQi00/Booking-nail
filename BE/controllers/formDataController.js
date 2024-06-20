@@ -1,4 +1,6 @@
-const { FormData, Booking } = require('../dbconfigs/models');
+const mongoose = require('mongoose');
+const { FormData, Service, Booking } = require('../models/_models')
+console.log(FormData);
 
 const getFormData = async (req, res) => {
     try {
@@ -6,6 +8,10 @@ const getFormData = async (req, res) => {
         if (!formData) {
             return res.status(404).json({ message: 'Form data not found' });
         }
+
+        const services = await Service.find().populate('subServices').lean();
+        formData.services = services;
+
         res.json(formData);
     } catch (error) {
         console.error('Error fetching form data:', error);
@@ -45,5 +51,26 @@ const getAllBookings = async (req, res) => {
         res.status(500).json({ message: 'Error fetching bookings', error: error.message });
     }
 };
+const getSubServices = async (req, res) => {
+    const { serviceId } = req.params;
+    console.log(serviceId,'serviceId BE 56');   
+    try {
+        const subservices = await Subservice.find({ service: serviceId });
+        res.json(subservices);
+    } catch (err) {
+        console.error('Error fetching subservices:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
-module.exports = { getFormData, getAvailableTimes, getAllBookings };
+const getServices = async (req, res) => {
+    try {
+        const services = await Service.find();
+        res.json({ services });
+    } catch (err) {
+        console.error('Error fetching services:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices,getServices };

@@ -2,78 +2,75 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedService = null;
     let selectedDate = null;
 
-    // Step 0 to Step 1 transition
-    document.getElementById('next-button-1').addEventListener('click', () => {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
+    // Fetch services on page load
+    fetch('http://localhost:3000/services')
+        .then(response => response.json())
+        .then(data => {
+            const serviceGrid = document.getElementById('service-grid');
+            serviceGrid.innerHTML = '';
 
-        if (name.trim() === '' || email.trim() === '') {
-            alert('Please enter your name and email.');
-            return;
-        }
+            data.services.forEach(service => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.classList.add('grid-item');
+                button.textContent = service.name;
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('#service-grid .grid-item').forEach(item => item.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedService = service._id;
+                    document.getElementById('selected-service').value = selectedService;
 
-        document.getElementById('step-0').style.display = 'none';
-        document.getElementById('step-1').style.display = 'block';
+                    // Fetch subservices for the selected service
+                    fetch(`http://localhost:3000/services/${selectedService}/subservices`)
+                        .then(response => response.json())
+                        .then(subservices => {
+                            const subserviceGrid = document.getElementById('subservice-grid');
+                            subserviceGrid.innerHTML = '';
 
-        // Fetch services
-        fetch('http://localhost:3000/form-data')
-            .then(response => response.json())
-            .then(data => {
-                const serviceGrid = document.getElementById('service-grid');
-                serviceGrid.innerHTML = '';  // Clear previous services
+                            subservices.forEach(subservice => {
+                                const subButton = document.createElement('button');
+                                subButton.type = 'button';
+                                subButton.classList.add('grid-item');
+                                subButton.textContent = `${subservice.name} - ${subservice.description} - $${subservice.price}`;
+                                subButton.addEventListener('click', () => {
+                                    document.querySelectorAll('#subservice-grid .grid-item').forEach(item => item.classList.remove('selected'));
+                                    subButton.classList.add('selected');
+                                    selectedSubService = subservice._id;
+                                });
+                                subserviceGrid.appendChild(subButton);
+                            });
 
-                data.services.forEach(service => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.classList.add('grid-item');
-                    button.textContent = service.name;
-                    button.addEventListener('click', () => {
-                        document.querySelectorAll('#service-grid .grid-item').forEach(item => item.classList.remove('selected'));
-                        button.classList.add('selected');
-                        selectedService = service.name;
-                        document.getElementById('selected-service').value = service.name;
-
-                        // Enable Step 2 Next Button
-                        document.getElementById('next-button-2').disabled = false;
-                    });
-                    serviceGrid.appendChild(button);
+                            // Enable Next Button for Step 2
+                            document.getElementById('next-button-2').disabled = false;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching subservices:', error);
+                            alert('An error occurred while fetching subservices. Please try again later.');
+                        });
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching services:', error);
-                alert('An error occurred. Please try again later.');
+                serviceGrid.appendChild(button);
             });
-    });
+        })
+        .catch(error => {
+            console.error('Error fetching services:', error);
+            alert('An error occurred while fetching services. Please try again later.');
+        });
 
-    // Step 1 to Step 2 transition
-    document.getElementById('next-button-2').addEventListener('click', () => {
-        if (!selectedService) {
-            alert('Please select a service.');
-            return;
-        }
-
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-2').style.display = 'block';
-    });
-
-    // Step 2 to Step 3 transition
-    document.getElementById('next-button-3').addEventListener('click', () => {
+    // Event listener for date change
+    document.getElementById('date').addEventListener('change', () => {
         selectedDate = document.getElementById('date').value;
-
-        if (!selectedDate) {
-            alert('Please select a date.');
-            return;
+        if (selectedService) {
+            fetchAvailableTimes(selectedService, selectedDate);
         }
+    });
 
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('step-3').style.display = 'block';
-
-        // Fetch available times for the selected service and date
-        fetch(`http://localhost:3000/available-times?service=${selectedService}&date=${selectedDate}`)
+    // Function to fetch available times
+    function fetchAvailableTimes(serviceId, date) {
+        fetch(`http://localhost:3000/available-times?service=${serviceId}&date=${date}`)
             .then(response => response.json())
             .then(data => {
                 const timeGrid = document.getElementById('time-grid');
-                timeGrid.innerHTML = '';  // Clear previous times
+                timeGrid.innerHTML = '';
 
                 data.forEach(time => {
                     const button = document.createElement('button');
@@ -84,35 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.querySelectorAll('#time-grid .grid-item').forEach(item => item.classList.remove('selected'));
                         button.classList.add('selected');
                         document.getElementById('selected-time').value = time;
-
-                        // Show submit button
-                        document.getElementById('submit-button').style.display = 'block';
                     });
                     timeGrid.appendChild(button);
                 });
             })
             .catch(error => {
                 console.error('Error fetching available times:', error);
-                alert('An error occurred. Please try again later.');
+                alert('An error occurred while fetching available times. Please try again later.');
             });
-    });
-
-    // Back button handlers
-    document.getElementById('back-button-1').addEventListener('click', () => {
-        console.log("hello");
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-0').style.display = 'block';
-    });
-
-    document.getElementById('back-button-2').addEventListener('click', () => {
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('step-1').style.display = 'block';
-    });
-
-    document.getElementById('back-button-3').addEventListener('click', () => {
-        document.getElementById('step-3').style.display = 'none';
-        document.getElementById('step-2').style.display = 'block';
-    });
+    }
 
     // Form submission handler
     document.getElementById('booking-form').addEventListener('submit', function(event) {
@@ -135,18 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             alert(data.message);  // Display success message
 
-            // Reset form and go back to Step 0
+            // Reset form and selections
             document.getElementById('booking-form').reset();
-            document.getElementById('step-3').style.display = 'none';
-            document.getElementById('step-0').style.display = 'block';
-            document.getElementById('submit-button').style.display = 'none'; // Hide submit button
+            document.querySelectorAll('.grid-item.selected').forEach(item => item.classList.remove('selected'));
+            selectedService = null;
+            selectedDate = null;
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
+            alert('An error occurred while booking the appointment. Please try again later.');
         });
     });
 });
