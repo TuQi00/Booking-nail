@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             const serviceGrid = document.getElementById('service-grid');
+            console.log(serviceGrid,'serviceGrid');
+            console.log(data,'data');
             serviceGrid.innerHTML = '';
 
             data.services.forEach(service => {
@@ -19,12 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.add('selected');
                     selectedService = service._id;
                     document.getElementById('selected-service').value = selectedService;
+                    console.log(selectedService,'selectedService');
 
                     // Fetch subservices for the selected service
                     fetch(`http://localhost:3000/services/${selectedService}/subservices`)
                         .then(response => response.json())
                         .then(subservices => {
                             const subserviceGrid = document.getElementById('subservice-grid');
+                            console.log(subserviceGrid,'subserviceGrid');
+                            console.log(subservices,'subservices');
                             subserviceGrid.innerHTML = '';
 
                             subservices.forEach(subservice => {
@@ -35,13 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 subButton.addEventListener('click', () => {
                                     document.querySelectorAll('#subservice-grid .grid-item').forEach(item => item.classList.remove('selected'));
                                     subButton.classList.add('selected');
-                                    selectedSubService = subservice._id;
+                                    selectedService = subservice._id;
                                 });
                                 subserviceGrid.appendChild(subButton);
                             });
 
-                            // Enable Next Button for Step 2
-                            document.getElementById('next-button-2').disabled = false;
                         })
                         .catch(error => {
                             console.error('Error fetching subservices:', error);
@@ -87,26 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error fetching available times:', error);
-                alert('An error occurred. Please try again later.');
+                alert('An error occurred while fetching available times. Please try again later.');
             });
-    });
-
-    // Back button handlers
-    document.getElementById('back-button-1').addEventListener('click', () => {
-        console.log("hello");
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-0').style.display = 'block';
-    });
-
-    document.getElementById('back-button-2').addEventListener('click', () => {
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('step-1').style.display = 'block';
-    });
-
-    document.getElementById('back-button-3').addEventListener('click', () => {
-        document.getElementById('step-3').style.display = 'none';
-        document.getElementById('step-2').style.display = 'block';
-    });
+    }
 
     // Form submission handler
     document.getElementById('booking-form').addEventListener('submit', function(event) {
