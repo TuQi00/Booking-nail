@@ -1,7 +1,7 @@
 const mongoose = require('../dbconfigs/connectDB');
 const Schema = mongoose.Schema;
 
-const subserviceSchema = new Schema({
+const subserviceSchema = new mongoose.Schema({
     service: {
         type: Schema.Types.ObjectId,
         ref: 'Service',
@@ -20,5 +20,6 @@ const subserviceSchema = new Schema({
         required: true
     }
 });
+const subService = mongoose.model('Subservice', subserviceSchema);
 
-module.exports = mongoose.model('Subservice', subserviceSchema);
+module.exports = subService

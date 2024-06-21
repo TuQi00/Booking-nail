@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { FormData, Service, Booking } = require('../models/_models')
+const { FormData, Service, Booking, SubService } = require('../models/_models')
 console.log(FormData);
 
 const getFormData = async (req, res) => {
@@ -53,9 +53,10 @@ const getAllBookings = async (req, res) => {
 };
 const getSubServices = async (req, res) => {
     const { serviceId } = req.params;
-    console.log(serviceId,'serviceId BE 56');   
+    console.log(serviceId, 'serviceId BE 56');
     try {
-        const subservices = await Subservice.find({ service: serviceId });
+        const subservices = await SubService.find({ _id: serviceId });
+        console.log(subservices);
         res.json(subservices);
     } catch (err) {
         console.error('Error fetching subservices:', err);
@@ -73,4 +74,4 @@ const getServices = async (req, res) => {
     }
 };
 
-module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices,getServices };
+module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices, getServices };

@@ -1,7 +1,6 @@
 const mongoose = require('../dbconfigs/connectDB');
-const Schema = mongoose.Schema;
 
-const serviceSchema = new Schema({
+const serviceSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -11,5 +10,5 @@ const serviceSchema = new Schema({
         required: true
     }
 });
-
-module.exports = mongoose.model('Service', serviceSchema);
+const Service = mongoose.model('Service', serviceSchema);
+module.exports = Service
