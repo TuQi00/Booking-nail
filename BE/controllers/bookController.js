@@ -15,7 +15,7 @@ const handleBooking = async (req, res) => {
         const newBooking = new Booking({ name, email, service, date, time });
         await newBooking.save();
 
-        res.status(201).json({ message: 'Booking created successfully' });
+        res.status(201).json(newBooking, { message: 'Booking created successfully' });
     } catch (error) {
         console.error('Error creating booking:', error);
         res.status(500).json({ message: 'Error creating booking', error: error.message });

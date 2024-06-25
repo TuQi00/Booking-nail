@@ -20,6 +20,6 @@ const subserviceSchema = new mongoose.Schema({
         required: true
     }
 });
-const subService = mongoose.model('Subservice', subserviceSchema);
+const SubService = mongoose.model('SubService', subserviceSchema);
 
-module.exports = subService
+module.exports = SubService;
