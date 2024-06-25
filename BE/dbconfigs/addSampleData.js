@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const mongoose = require('mongoose');
+=======
+const mongoose = require('./connectDB');
+>>>>>>> origin/main
 const Customer = require('../models/customer');
 const Employee = require('../models/employee');
 const Service = require('../models/service');
@@ -20,10 +24,17 @@ const sampleServices = [
   { name: 'Pedicure', description: 'Pedicure service description', subServices: pedicureSubServices }
 ];
 
+<<<<<<< HEAD
 // const sampleCustomers = [
 //   { _id: mongoose.Types.ObjectId(), name: 'John Doe', phone: '123456789', email: 'john@example.com' },
 //   { _id: mongoose.Types.ObjectId(), name: 'Jane Doe', phone: '987654321', email: 'jane@example.com' }
 // ];
+=======
+const sampleCustomers = [
+  { _id: '1', name: 'John Doe', phone: '123456789', email: 'john@example.com' },
+  { _id: '2', name: 'Jane Doe', phone: '987654321', email: 'jane@example.com' }
+];
+>>>>>>> origin/main
 
 const sampleEmployees = [
   { name: 'Alice', position: 'Manager', phone: '111111111', email: 'alice@example.com' },
@@ -45,7 +56,11 @@ const seedData = async () => {
     await Subservice.deleteMany({});
 
     // Add customers
+<<<<<<< HEAD
     // await Customer.create(sampleCustomers);
+=======
+    await Customer.create(sampleCustomers);
+>>>>>>> origin/main
 
     // Add employees
     await Employee.create(sampleEmployees);

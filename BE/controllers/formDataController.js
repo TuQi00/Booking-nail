@@ -85,5 +85,12 @@ const getServices = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+>>>>>>> origin/main
 module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices, getServices };
+=======
+module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices, getServices };
+>>>>>>> 4d58c120a0aceb7f6ff096f9ff1c9e3d166716c3
