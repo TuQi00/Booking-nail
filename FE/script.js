@@ -20,11 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.add('selected');
                     selectedService = service._id;
                     document.getElementById('selected-service').value = selectedService;
+                    console.log(selectedService,'selectedService');
 
                     // Fetch subservices for the selected service
                     fetch(`http://localhost:3000/services/${selectedService}/subservices`)
-                        .then(response => response.json())
+                        .then(response => 
+                            response.json()  
+                        )
                         .then(subservices => {
+                            console.log(subservices,'scr 27 ');
                             const subserviceGrid = document.getElementById('subservice-grid');
                             subserviceGrid.innerHTML = '';
 
@@ -36,8 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 subButton.addEventListener('click', () => {
                                     document.querySelectorAll('#subservice-grid .grid-item').forEach(item => item.classList.remove('selected'));
                                     subButton.classList.add('selected');
-                                    selectedSubservice = subservice._id;
-                                    document.getElementById('selected-subservice').value = selectedSubservice;
+                                    selectedService = subservice._id;
                                 });
                                 subserviceGrid.appendChild(subButton);
                             });
@@ -98,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             service: document.getElementById('selected-service').value,
-            subservice: document.getElementById('selected-subservice').value,
             date: document.getElementById('date').value,
             time: document.getElementById('selected-time').value
         };
