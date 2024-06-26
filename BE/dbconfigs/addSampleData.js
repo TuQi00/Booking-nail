@@ -1,4 +1,4 @@
-const mongoose = require('./connectDB');
+const mongoose = require('mongoose');
 const Customer = require('../models/customer');
 const Employee = require('../models/employee');
 const Service = require('../models/service');
@@ -20,11 +20,6 @@ const sampleServices = [
   { name: 'Pedicure', description: 'Pedicure service description', subServices: pedicureSubServices }
 ];
 
-const sampleCustomers = [
-  { _id: '1', name: 'John Doe', phone: '123456789', email: 'john@example.com' },
-  { _id: '2', name: 'Jane Doe', phone: '987654321', email: 'jane@example.com' }
-];
-
 const sampleEmployees = [
   { name: 'Alice', position: 'Manager', phone: '111111111', email: 'alice@example.com' },
   { name: 'Bob', position: 'Technician', phone: '222222222', email: 'bob@example.com' }
@@ -37,15 +32,16 @@ const sampleFormData = {
 
 const seedData = async () => {
   try {
+    if (!mongoose.connection.readyState) {
+      throw new Error('MongoDB connection is not established');
+    }
+
     // Clear existing data
     await Customer.deleteMany({});
     await Employee.deleteMany({});
     await FormData.deleteMany({});
     await Service.deleteMany({});
     await Subservice.deleteMany({});
-
-    // Add customers
-    await Customer.create(sampleCustomers);
 
     // Add employees
     await Employee.create(sampleEmployees);

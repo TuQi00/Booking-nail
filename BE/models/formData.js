@@ -1,4 +1,4 @@
-const mongoose = require('../dbconfigs/connectDB');
+const mongoose = require('mongoose');
 
 const formDataSchema = new mongoose.Schema({
   services: [{

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-const { FormData, Service, Booking, SubService } = require('../models/_models')
+const FormData = require('../models/formData')
+const Service = require('../models/service')
+const Booking = require('../models/booking')
+const SubService = require('../models/subServices')
 console.log(FormData);
 
 const getFormData = async (req, res) => {
@@ -9,7 +12,7 @@ const getFormData = async (req, res) => {
             return res.status(404).json({ message: 'Form data not found' });
         }
 
-        const services = await Service.find().populate('subServices').lean();
+        const services = await Service.find();
         formData.services = services;
 
         res.json(formData);
@@ -55,7 +58,7 @@ const getSubServices = async (req, res) => {
     const { serviceId } = req.params;
     console.log(serviceId, 'serviceId BE 56');
     try {
-        const subservices = await SubService.find({ _id: serviceId });
+        const subservices = await SubService.find({ service: serviceId });
         console.log(subservices);
         res.json(subservices);
     } catch (err) {
@@ -74,8 +77,4 @@ const getServices = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
 module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices, getServices };
-=======
-module.exports = { getFormData, getAvailableTimes, getAllBookings, getSubServices, getServices };
->>>>>>> 4d58c120a0aceb7f6ff096f9ff1c9e3d166716c3

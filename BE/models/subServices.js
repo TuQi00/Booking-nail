@@ -1,4 +1,4 @@
-const mongoose = require('../dbconfigs/connectDB');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const subserviceSchema = new mongoose.Schema({
@@ -22,4 +22,4 @@ const subserviceSchema = new mongoose.Schema({
 });
 const subService = mongoose.model('Subservice', subserviceSchema);
 
-module.exports = mongoose.model('Subservice', subserviceSchema);
+module.exports = subService

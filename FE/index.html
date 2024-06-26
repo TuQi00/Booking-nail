@@ -16,7 +16,7 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
         </div>
-
+    
         <div id="step-1" class="step">
             <label for="service">Service:</label>
             <div id="service-grid" class="grid-container"></div>
@@ -27,18 +27,20 @@
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required>
         </div>
-
+    
         <div id="step-3" class="step">
             <label for="time">Time:</label>
             <div id="time-grid" class="grid-container"></div>
         </div>
-
-        <!-- Hidden input fields to store selected service and time -->
+    
+        <!-- Hidden input fields to store selected service, subservice, and time -->
         <input type="hidden" id="selected-service" name="service">
+        <input type="hidden" id="selected-subservice" name="subservice">
         <input type="hidden" id="selected-time" name="time">
-
+    
         <button type="submit" id="submit-button" class="next-button">Book Now</button>
     </form>
+    
 
     <script src="script.js"></script>
 </body>

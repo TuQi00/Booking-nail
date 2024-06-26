@@ -1,11 +1,10 @@
-const mongoose = require('../dbconfigs/connectDB');
+const mongoose = require('mongoose');
 
-const customerSchema = new mongoose.Schema({
-    _id: String,
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
-    loyaltyPoints: { type: Number, default: 0 }
+const customerSchema = new mongoose.Schema({ 
+    _id: mongoose.Schema.Types.ObjectId,
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, required: true }
 });
 
 const Customer = mongoose.model('Customer', customerSchema);

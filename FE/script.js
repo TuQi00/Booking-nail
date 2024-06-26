@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let selectedService = null;
+    let selectedSubservice = null;
     let selectedDate = null;
 
     // Fetch services on page load
@@ -7,8 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             const serviceGrid = document.getElementById('service-grid');
-            console.log(serviceGrid,'serviceGrid');
-            console.log(data,'data');
             serviceGrid.innerHTML = '';
 
             data.services.forEach(service => {
@@ -21,15 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.add('selected');
                     selectedService = service._id;
                     document.getElementById('selected-service').value = selectedService;
-                    console.log(selectedService,'selectedService');
 
                     // Fetch subservices for the selected service
                     fetch(`http://localhost:3000/services/${selectedService}/subservices`)
                         .then(response => response.json())
                         .then(subservices => {
                             const subserviceGrid = document.getElementById('subservice-grid');
-                            console.log(subserviceGrid,'subserviceGrid');
-                            console.log(subservices,'subservices');
                             subserviceGrid.innerHTML = '';
 
                             subservices.forEach(subservice => {
@@ -40,11 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 subButton.addEventListener('click', () => {
                                     document.querySelectorAll('#subservice-grid .grid-item').forEach(item => item.classList.remove('selected'));
                                     subButton.classList.add('selected');
-                                    selectedService = subservice._id;
+                                    selectedSubservice = subservice._id;
+                                    document.getElementById('selected-subservice').value = selectedSubservice;
                                 });
                                 subserviceGrid.appendChild(subButton);
                             });
-
                         })
                         .catch(error => {
                             console.error('Error fetching subservices:', error);
@@ -102,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             service: document.getElementById('selected-service').value,
+            subservice: document.getElementById('selected-subservice').value,
             date: document.getElementById('date').value,
             time: document.getElementById('selected-time').value
         };
@@ -121,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('booking-form').reset();
             document.querySelectorAll('.grid-item.selected').forEach(item => item.classList.remove('selected'));
             selectedService = null;
+            selectedSubservice = null;
             selectedDate = null;
         })
         .catch(error => {
