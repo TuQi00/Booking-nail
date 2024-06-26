@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const FormData = require('../models/formData')
 const Service = require('../models/service')
 const Booking = require('../models/booking')
@@ -24,26 +23,28 @@ const getFormData = async (req, res) => {
 
 const getAvailableTimes = async (req, res) => {
     try {
-        const { service, date } = req.query;
-        if (!service || !date) {
-            return res.status(400).json({ message: 'Service and date are required query parameters' });
+        const { service, subservice, date } = req.query;
+        if (!service || !subservice || !date) {
+            return res.status(400).json({ message: 'Service, subservice, and date are required query parameters' });
         }
-
+        console.log({ service, subservice, date });
         const formData = await FormData.findOne();
         if (!formData) {
             return res.status(404).json({ message: 'Form data not found' });
         }
 
-        const availableTimes = formData.availableTimes;
-        // Simulate filtering available times based on service and date (replace with actual logic)
-        const filteredTimes = availableTimes.filter(time => time !== '13:00'); // Example filtering
+        const bookings = await Booking.find({ service, subservice, date });
+        const bookedTimes = bookings.map(booking => booking.time);
 
-        res.json(filteredTimes);
+        const availableTimes = formData.availableTimes.filter(time => !bookedTimes.includes(time));
+
+        res.json(availableTimes); // Đảm bảo trả về một mảng
     } catch (error) {
         console.error('Error fetching available times:', error);
         res.status(500).json({ message: 'Error fetching available times', error: error.message });
     }
 };
+
 
 const getAllBookings = async (req, res) => {
     try {
