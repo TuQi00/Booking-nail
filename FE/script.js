@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedDate = null;
 
     // Fetch services on page load
-    fetch('http://localhost:3000/services')
+    fetch('http://localhost:3000/api/services')
         .then(response => response.json())
         .then(data => {
             const serviceGrid = document.getElementById('service-grid');
@@ -20,15 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.add('selected');
                     selectedService = service._id;
                     document.getElementById('selected-service').value = selectedService;
-                    console.log(selectedService,'selectedService');
 
                     // Fetch subservices for the selected service
-                    fetch(`http://localhost:3000/services/${selectedService}/subservices`)
-                        .then(response => 
-                            response.json()  
-                        )
+                    fetch(`http://localhost:3000/api/services/${selectedService}/subservices`)
+                        .then(response => response.json())
                         .then(subservices => {
-                            console.log(subservices,'scr 27 ');
                             const subserviceGrid = document.getElementById('subservice-grid');
                             subserviceGrid.innerHTML = '';
 
@@ -36,11 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const subButton = document.createElement('button');
                                 subButton.type = 'button';
                                 subButton.classList.add('grid-item');
-                                subButton.textContent = `${subservice.name} - ${subservice.description} - $${subservice.price}`;
+                                subButton.textContent = `${subservice.name}- ${subservice.description} - $${subservice.price}`;
                                 subButton.addEventListener('click', () => {
                                     document.querySelectorAll('#subservice-grid .grid-item').forEach(item => item.classList.remove('selected'));
                                     subButton.classList.add('selected');
-                                    selectedService = subservice._id;
+                                    selectedSubservice = subservice._id;
+                                    document.getElementById('selected-subservice').value = selectedSubservice;
+
+                                    // Fetch available times if both subservice and date are selected
+                                    if (selectedDate) {
+                                        fetchAvailableTimes(selectedService, selectedSubservice, selectedDate);
+                                    }
                                 });
                                 subserviceGrid.appendChild(subButton);
                             });
@@ -61,19 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for date change
     document.getElementById('date').addEventListener('change', () => {
         selectedDate = document.getElementById('date').value;
-        if (selectedService) {
-            fetchAvailableTimes(selectedService, selectedDate);
+        console.log('Date selected:', selectedDate);  // Logging để kiểm tra giá trị của date
+        if (selectedService && selectedSubservice) {
+            fetchAvailableTimes(selectedService, selectedSubservice, selectedDate);
         }
     });
 
     // Function to fetch available times
-    function fetchAvailableTimes(serviceId, date) {
-        fetch(`http://localhost:3000/available-times?service=${serviceId}&date=${date}`)
+    function fetchAvailableTimes(serviceId, subserviceId, date) {
+        console.log('Fetching available times with:', { serviceId, subserviceId, date });  // Logging để kiểm tra tham số
+        fetch(`http://localhost:3000/api/available-times?service=${serviceId}&subservice=${subserviceId}&date=${date}`)
             .then(response => response.json())
             .then(data => {
+                console.log('Available times data:', data);  // Logging để kiểm tra dữ liệu trả về
+
+                // Kiểm tra nếu response là một mảng
+                if (!Array.isArray(data)) {
+                    throw new Error('API response is not an array');
+                }
+
                 const timeGrid = document.getElementById('time-grid');
                 timeGrid.innerHTML = '';
-
                 data.forEach(time => {
                     const button = document.createElement('button');
                     button.type = 'button';
@@ -91,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error fetching available times:', error);
                 alert('An error occurred while fetching available times. Please try again later.');
             });
-    }
+    };
 
     // Form submission handler
     document.getElementById('booking-form').addEventListener('submit', function(event) {
@@ -101,11 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             service: document.getElementById('selected-service').value,
+            subservice: document.getElementById('selected-subservice').value,
             date: document.getElementById('date').value,
             time: document.getElementById('selected-time').value
         };
 
-        fetch('http://localhost:3000/booking', {
+        fetch('http://localhost:3000/api/booking', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
